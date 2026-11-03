@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Reservation System - All Bookings</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Grand Stay Hotel</h1>
+        <p>Hotel Reservation System</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="rooms.html">Rooms</a>
+        <a href="booking.html">Book a Room</a>
+        <a href="bookings.html">All Bookings</a>
+    </nav>
+
+    <div class="container">
+        <h2>All Bookings</h2>
+        <p>This table shows the output of the <b>booking_details</b> view
+           (bookings + customers + rooms joined together).</p>
+
+        <table>
+            <tr>
+                <th>Booking ID</th>
+                <th>Customer Name</th>
+                <th>Room No.</th>
+                <th>Room Type</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Nights</th>
+                <th>Total Bill (&#8377;)</th>
+                <th>Status</th>
+            </tr>
+            <tr><td>1</td><td>Aman Gupta</td><td>103</td><td>Double</td><td>2026-09-01</td><td>2026-09-04</td><td>3</td><td>7500</td><td>Completed</td></tr>
+            <tr><td>2</td><td>Sneha Patel</td><td>201</td><td>Deluxe</td><td>2026-09-10</td><td>2026-09-12</td><td>2</td><td>8000</td><td>Completed</td></tr>
+            <tr><td>3</td><td>Rohit Mehta</td><td>101</td><td>Single</td><td>2026-09-15</td><td>2026-09-20</td><td>5</td><td>7500</td><td>Completed</td></tr>
+            <tr><td>4</td><td>Kavya Nair</td><td>301</td><td>Suite</td><td>2026-10-01</td><td>2026-10-03</td><td>2</td><td>14000</td><td>Completed</td></tr>
+            <tr><td>5</td><td>Arjun Reddy</td><td>103</td><td>Double</td><td>2026-10-05</td><td>2026-10-06</td><td>1</td><td>2500</td><td class="booked">Cancelled</td></tr>
+            <tr><td>6</td><td>Aman Gupta</td><td>201</td><td>Deluxe</td><td>2026-10-10</td><td>2026-10-14</td><td>4</td><td>16000</td><td>Completed</td></tr>
+            <tr><td>7</td><td>Pooja Joshi</td><td>102</td><td>Single</td><td>2026-11-01</td><td>2026-11-05</td><td>4</td><td>6000</td><td class="available">Confirmed</td></tr>
+            <tr><td>8</td><td>Karan Malhotra</td><td>104</td><td>Double</td><td>2026-11-02</td><td>2026-11-04</td><td>2</td><td>5000</td><td class="available">Confirmed</td></tr>
+            <tr><td>9</td><td>Anjali Das</td><td>202</td><td>Deluxe</td><td>2026-11-02</td><td>2026-11-07</td><td>5</td><td>20000</td><td class="available">Confirmed</td></tr>
+            <tr><td>10</td><td>Siddharth Jain</td><td>302</td><td>Suite</td><td>2026-11-03</td><td>2026-11-06</td><td>3</td><td>21000</td><td class="available">Confirmed</td></tr>
+        </table>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Grand Stay Hotel | DBMS CA Project</p>
+    </footer>
+
+</body>
+</html>

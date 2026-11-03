@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Reservation System - Book a Room</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Grand Stay Hotel</h1>
+        <p>Hotel Reservation System</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="rooms.html">Rooms</a>
+        <a href="booking.html">Book a Room</a>
+        <a href="bookings.html">All Bookings</a>
+    </nav>
+
+    <div class="container">
+        <h2>Book a Room</h2>
+        <p>Fill this form to book a room. The fields are the same as the
+           <b>customers</b> and <b>bookings</b> tables in the database.</p>
+
+        <form action="#" method="post">
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" name="first_name" placeholder="Enter first name" required>
+
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" name="last_name" placeholder="Enter last name">
+
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="10 digit mobile number"
+                   pattern="[0-9]{10}" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="example@gmail.com">
+
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" placeholder="Enter city">
+
+            <label for="roomtype">Room Type</label>
+            <select id="roomtype" name="room_type" required>
+                <option value="">-- Select Room Type --</option>
+                <option value="Single">Single - &#8377;1500 / night</option>
+                <option value="Double">Double - &#8377;2500 / night</option>
+                <option value="Deluxe">Deluxe - &#8377;4000 / night</option>
+                <option value="Suite">Suite - &#8377;7000 / night</option>
+            </select>
+
+            <label for="checkin">Check-in Date</label>
+            <input type="date" id="checkin" name="check_in" required>
+
+            <label for="checkout">Check-out Date</label>
+            <input type="date" id="checkout" name="check_out" required>
+
+            <label for="payment">Payment Method</label>
+            <select id="payment" name="payment_method">
+                <option value="Cash">Cash</option>
+                <option value="Card">Card</option>
+                <option value="UPI">UPI</option>
+            </select>
+
+            <button type="submit" class="btn">Book Room</button>
+            <button type="reset" class="btn">Clear</button>
+        </form>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Grand Stay Hotel | DBMS CA Project</p>
+    </footer>
+
+</body>
+</html>
