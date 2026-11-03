@@ -59,6 +59,7 @@ Simple **HTML pages** are also made to show how the front end of the system woul
 | MySQL Workbench / MySQL Command Line | Running SQL queries |
 | HTML5 | Web pages |
 | CSS | Styling the web pages |
+| JavaScript (Canvas) | 3D interactive ER diagram and Story Mode on the Docs page |
 | VS Code | Code editor |
 
 ---
@@ -72,7 +73,8 @@ Hotel-Reservation-System/
 ├── sql/
 │   ├── 01_create_tables.sql   -> Creates database and all tables
 │   ├── 02_insert_data.sql     -> Inserts sample data
-│   └── 03_queries.sql         -> All SQL queries (26 queries)
+│   ├── 03_queries.sql         -> All SQL queries (26 queries)
+│   └── 04_checkin_story.sql   -> Check-in story (same steps as Story Mode)
 │
 ├── er-diagram/
 │   ├── er_diagram.svg         -> ER Diagram (vector image)
@@ -83,7 +85,11 @@ Hotel-Reservation-System/
 │   ├── rooms.html             -> List of rooms
 │   ├── booking.html           -> Room booking form
 │   ├── bookings.html          -> All bookings (admin view)
-│   └── style.css              -> Common CSS for all pages
+│   ├── docs.html              -> Docs: SQL explained + 3D ER diagram + Story Mode
+│   ├── style.css              -> Common CSS for all pages
+│   ├── docs.css               -> CSS for the Docs page
+│   ├── docs.js                -> SQL colouring, copy buttons
+│   └── er3d.js                -> 3D ER diagram + Story Mode (plain JavaScript)
 │
 └── screenshots/               -> Screenshots of the HTML pages
 ```
@@ -349,6 +355,21 @@ The data shown in the tables is the same as the data in the database.
 | `rooms.html` | Table of all rooms with price and status |
 | `booking.html` | Form to book a room (fields match the database tables) |
 | `bookings.html` | Table of all bookings (same as the `booking_details` view) |
+| `docs.html` | Project docs: full SQL explained, live 3D ER diagram and Story Mode |
+
+### 📘 Docs Page (3D ER Diagram + Story Mode)
+The **Docs** page (link in the menu, or the *Read the Docs* button on the landing page) explains the whole project:
+- **How the system works** – the life of one booking, step by step.
+- **3D ER Diagram (live)** – drag to rotate, click a table or relationship to see its columns,
+  meaning and SQL, zoom with **+ / −**, and a **Full screen** button. Moving dots show IDs
+  flowing between tables through Foreign Keys.
+- **Story Mode** – follows a new guest (Riya Kapoor) from arriving to check-out in 10 steps.
+  In each step only the tables being used light up, and the page shows the SQL that runs and the
+  rows that change. The same SQL is in `sql/04_checkin_story.sql`.
+- **All SQL files explained** – every table, constraint and all 26 queries with their outputs,
+  an SQL cheat sheet and viva questions.
+
+The 3D diagram is made with plain JavaScript and `<canvas>`. No library or internet is needed.
 
 > Note: The pages are not connected to the database. Connecting them would need a back-end
 > language like PHP or Node.js, which is outside the scope of this CA.
@@ -377,6 +398,7 @@ The data shown in the tables is the same as the data in the database.
 2. Open `sql/01_create_tables.sql` and click the ⚡ (Execute) button.
 3. Open `sql/02_insert_data.sql` and execute it.
 4. Open `sql/03_queries.sql` and execute the queries one by one to see the output.
+5. (Optional) Open `sql/04_checkin_story.sql` to run the check-in story from the Docs page.
 
 **Option 2 – MySQL Command Line**
 ```sql

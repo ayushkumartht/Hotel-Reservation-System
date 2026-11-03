@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grand Stay Hotel - Docs</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+
+    <header>
+        <h1>Grand Stay Hotel</h1>
+        <p>Project Docs &ndash; how the database works</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="rooms.html">Rooms</a>
+        <a href="booking.html">Book a Room</a>
+        <a href="bookings.html">All Bookings</a>
+        <a href="docs.html">Docs</a>
+    </nav>
+
+    <div class="docs-layout">
+
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="docs-sidebar">
+            <p class="side-title">ON THIS PAGE</p>
+            <a href="#overview">1. Overview</a>
+            <a href="#how-it-works">2. How the System Works</a>
+            <a href="#er-3d">3. 3D ER Diagram</a>
+            <a href="#story-mode">4. Story Mode</a>
+            <a href="#sql-tables">5. SQL File 1 &ndash; Tables</a>
+            <a href="#sql-data">6. SQL File 2 &ndash; Data</a>
+            <a href="#sql-queries">7. SQL File 3 &ndash; Queries</a>
+            <a href="#sql-story">8. SQL File 4 &ndash; Story</a>
+            <a href="#cheat-sheet">9. SQL Cheat Sheet</a>
+            <a href="#viva">10. Viva Questions</a>
+        </aside>
+
+        <main class="docs-content">
+
+            <!-- ================= 1. OVERVIEW ================= -->
+            <section id="overview">
+                <h2>1. Overview</h2>
+                <p class="lead">
+                    The <b>Hotel Reservation System</b> is a MySQL database for a small hotel called
+                    <b>Grand Stay Hotel</b>. It stores the hotel's <b>customers</b>, <b>rooms</b>, <b>staff</b>,
+                    <b>bookings</b> and <b>payments</b>, and uses SQL queries to answer questions like
+                    <i>"Which rooms are free?"</i> or <i>"How much is the bill?"</i>
+                </p>
+
+                <div class="stats">
+                    <div class="stat"><b>5</b>Tables</div>
+                    <div class="stat"><b>4</b>Relationships</div>
+                    <div class="stat"><b>42</b>Sample rows</div>
+                    <div class="stat"><b>4</b>SQL files</div>
+                </div>
+
+                <table>
+                    <tr><th>Table</th><th>What it stores</th><th>Example row</th></tr>
+                    <tr><td><b>customers</b></td><td>Guests of the hotel</td><td>1, Aman Gupta, Delhi</td></tr>
+                    <tr><td><b>rooms</b></td><td>Rooms with type, price and status</td><td>Room 101, Single, &#8377;1500, Available</td></tr>
+                    <tr><td><b>staff</b></td><td>Hotel employees</td><td>2, Priya Sharma, Receptionist</td></tr>
+                    <tr><td><b>bookings</b></td><td>Which customer booked which room, and when</td><td>Booking 1: Aman &rarr; room 103, 1 to 4 Sep</td></tr>
+                    <tr><td><b>payments</b></td><td>Money paid for each booking</td><td>&#8377;7500 by Card for booking 1</td></tr>
+                </table>
+            </section>
+
+            <!-- ================= 2. HOW IT WORKS ================= -->
+            <section id="how-it-works">
+                <h2>2. How the System Works</h2>
+                <p>This is the life of one booking, from the moment a guest walks in until they leave.
+                   Every step uses one or more tables of the database.</p>
+
+                <div class="flow">
+                    <div class="flow-step"><span>1</span>Guest arrives</div>
+                    <div class="flow-arrow">&rarr;</div>
+                    <div class="flow-step"><span>2</span>Save customer<small>customers</small></div>
+                    <div class="flow-arrow">&rarr;</div>
+                    <div class="flow-step"><span>3</span>Find free room<small>rooms</small></div>
+                    <div class="flow-arrow">&rarr;</div>
+                    <div class="flow-step"><span>4</span>Create booking<small>bookings</small></div>
+                    <div class="flow-arrow">&rarr;</div>
+                    <div class="flow-step"><span>5</span>Room = Booked<small>UPDATE rooms</small></div>
+                    <div class="flow-arrow">&rarr;</div>
+                    <div class="flow-step"><span>6</span>Check-in<small>JOIN</small></div>
+                    <div class="flow-arrow">&rarr;</div>
+                    <div class="flow-step"><span>7</span>Bill<small>DATEDIFF</small></div>
+                    <div class="flow-arrow">&rarr;</div>
+                    <div class="flow-step"><span>8</span>Payment<small>payments</small></div>
+                    <div class="flow-arrow">&rarr;</div>
+                    <div class="flow-step"><span>9</span>Check-out<small>UPDATE</small></div>
+                </div>
+
+                <h3>The main idea: tables are connected by IDs</h3>
+                <p>The <b>bookings</b> table is the centre of the system. It does <b>not</b> copy the
+                   customer's name or the room's price. It only stores their <b>IDs</b>:</p>
+<pre><code class="sql">-- booking 1 : customer 1 booked room 3, the booking was made by staff 2
+(1, 1, 3, 2, '2026-09-01', '2026-09-04', 'Completed')</code></pre>
+                <p>When we need the full details, we <b>JOIN</b> the tables using these IDs:
+                   customer 1 = <b>Aman Gupta</b>, room 3 = <b>room 103</b>, staff 2 = <b>Priya Sharma</b>.
+                   Because of this, every piece of data is stored only <b>once</b> (no repetition).
+                   This is called <b>normalization</b>.</p>
+
+                <h3>What is behind each web page</h3>
+                <p>The HTML pages are simple static pages. If they were connected to the database (for example
+                   with PHP), this is the SQL each page would run:</p>
+                <table>
+                    <tr><th>Page</th><th>Table(s) used</th><th>SQL behind it</th></tr>
+                    <tr><td>index.html</td><td>rooms</td><td><code>SELECT DISTINCT room_type, price_per_night FROM rooms;</code></td></tr>
+                    <tr><td>rooms.html</td><td>rooms</td><td><code>SELECT * FROM rooms;</code></td></tr>
+                    <tr><td>booking.html</td><td>customers, bookings, payments</td><td><code>INSERT INTO customers ...</code>, <code>INSERT INTO bookings ...</code></td></tr>
+                    <tr><td>bookings.html</td><td>bookings + customers + rooms</td><td><code>SELECT * FROM booking_details;</code> (a view)</td></tr>
+                </table>
+            </section>
+
+            <!-- ================= 3. 3D ER DIAGRAM ================= -->
+            <section id="er-3d">
+                <h2>3. 3D ER Diagram (Live)</h2>
+                <p>This is the ER diagram of the project in <b>3D</b>. It is live: it slowly turns, and the
+                   moving dots show IDs travelling between tables through Foreign Keys.</p>
+                <ul>
+                    <li><b>Drag</b> the diagram to turn it around.</li>
+                    <li><b>Click</b> a table or a diamond to see its columns, meaning and SQL below.</li>
+                    <li>Use <b>+ / &minus;</b> (or <b>Ctrl + mouse wheel</b>) to zoom.</li>
+                    <li>Press <b>Story Mode</b> to watch a customer check in, step by step.</li>
+                    <li>Press <b>Full screen</b> to see the diagram on the whole screen (Esc to come back).</li>
+                </ul>
+
+                <div class="er-viewer" id="er-viewer">
+                    <div class="er-toolbar">
+                        <div class="er-group">
+                            <button type="button" id="er-mode-explore" class="on">Explore</button>
+                            <button type="button" id="er-mode-story">&#9654; Story Mode</button>
+                        </div>
+                        <div class="er-group">
+                            <button type="button" id="er-cols">Columns: OFF</button>
+                            <button type="button" id="er-rotate" class="on">Auto-rotate: ON</button>
+                            <button type="button" id="er-zoom-in" title="Zoom in">+</button>
+                            <button type="button" id="er-zoom-out" title="Zoom out">&minus;</button>
+                            <button type="button" id="er-reset">Reset view</button>
+                            <button type="button" id="er-full">&#9974; Full screen</button>
+                        </div>
+                    </div>
+
+                    <canvas id="er-canvas" role="img"
+                            aria-label="3D ER diagram: CUSTOMERS, ROOMS and STAFF are each connected one-to-many to BOOKINGS, and BOOKINGS is connected one-to-one to PAYMENTS."></canvas>
+                    <noscript><p style="color:#fff;padding:15px;">Turn on JavaScript to see the 3D diagram.
+                        The flat ER diagram is in the er-diagram folder of the project.</p></noscript>
+
+                    <div class="er-progress"><div id="er-progress"></div></div>
+
+                    <div class="er-story-bar">
+                        <div class="er-group">
+                            <button type="button" id="er-prev">&#9664; Prev</button>
+                            <button type="button" id="er-play">&#9654; Play</button>
+                            <button type="button" id="er-next">Next &#9654;</button>
+                            <button type="button" id="er-speed">Speed: 1x</button>
+                        </div>
+                        <div class="er-dots" id="er-dots"></div>
+                        <button type="button" id="er-exit">Exit story</button>
+                    </div>
+
+                    <div class="er-hint">
+                        <span class="er-hint-explore">Drag to rotate &middot; Click a table or diamond &middot; Ctrl + wheel or + / &minus; to zoom</span>
+                        <span class="er-hint-story">Use Prev / Next (or the &larr; &rarr; keys) &middot; Play goes through the steps by itself &middot; Esc leaves the story</span>
+                    </div>
+
+                    <div class="er-panel" id="er-panel"></div>
+                </div>
+            </section>
+
+            <!-- ================= 4. STORY MODE ================= -->
+            <section id="story-mode">
+                <h2>4. Story Mode &ndash; A Customer Checks In</h2>
+                <p>Story Mode plays the life of one booking. A new guest, <b>Riya Kapoor</b>, books a Deluxe room,
+                   checks in, pays and checks out. In every step the 3D diagram lights up <b>only the tables that
+                   are used</b>, shows the <b>SQL</b> that runs and the <b>rows that change</b>.
+                   The same SQL is in <code>sql/04_checkin_story.sql</code>, so you can run it yourself in MySQL.</p>
+
+                <p><button type="button" class="btn" data-start-story="0">&#9654; Start the check-in story</button></p>
+
+                <p>Or jump to any step:</p>
+                <ol class="story-list">
+                    <li><button type="button" data-start-story="0"><b>Step 1</b> A guest arrives</button></li>
+                    <li><button type="button" data-start-story="1"><b>Step 2</b> Save the customer (INSERT)</button></li>
+                    <li><button type="button" data-start-story="2"><b>Step 3</b> Find a free room (SELECT)</button></li>
+                    <li><button type="button" data-start-story="3"><b>Step 4</b> Create the booking (Foreign Keys)</button></li>
+                    <li><button type="button" data-start-story="4"><b>Step 5</b> Mark the room Booked (UPDATE)</button></li>
+                    <li><button type="button" data-start-story="5"><b>Step 6</b> Check-in day (JOIN)</button></li>
+                    <li><button type="button" data-start-story="6"><b>Step 7</b> Calculate the bill (DATEDIFF)</button></li>
+                    <li><button type="button" data-start-story="7"><b>Step 8</b> Take the payment (1 : 1)</button></li>
+                    <li><button type="button" data-start-story="8"><b>Step 9</b> Check-out complete (UPDATE)</button></li>
+                    <li><button type="button" data-start-story="9"><b>Step 10</b> The End &ndash; all 5 tables</button></li>
+                </ol>
+            </section>
+
+            <!-- ================= 5. FILE 1 ================= -->
+            <section id="sql-tables">
+                <h2>5. SQL File 1 &ndash; Creating the Tables</h2>
+                <p>File: <code>sql/01_create_tables.sql</code>. It creates the database and the 5 empty tables.</p>
+
+                <h3>Step 1: Create the database</h3>
+<pre><code class="sql">DROP DATABASE IF EXISTS hotel_db;
+CREATE DATABASE hotel_db;
+USE hotel_db;</code></pre>
+                <ul>
+                    <li><code>DROP DATABASE IF EXISTS</code> deletes the old database (if there is one), so we can start fresh every time.</li>
+                    <li><code>CREATE DATABASE</code> makes a new empty database called <b>hotel_db</b>.</li>
+                    <li><code>USE</code> tells MySQL that all the next commands are for this database.</li>
+                </ul>
+
+                <h3>Data types used</h3>
+                <table>
+                    <tr><th>Data type</th><th>Meaning</th><th>Example in project</th></tr>
+                    <tr><td><code>INT</code></td><td>Whole number</td><td>customer_id = 1</td></tr>
+                    <tr><td><code>VARCHAR(n)</code></td><td>Text of up to <i>n</i> characters</td><td>first_name VARCHAR(50) = 'Aman'</td></tr>
+                    <tr><td><code>DECIMAL(p, s)</code></td><td>Number with decimals: <i>p</i> digits in total, <i>s</i> after the point</td><td>price_per_night DECIMAL(8,2) = 1500.00</td></tr>
+                    <tr><td><code>DATE</code></td><td>A date in 'YYYY-MM-DD' format</td><td>check_in = '2026-09-01'</td></tr>
+                </table>
+
+                <h3>Constraints used (rules on the data)</h3>
+                <table>
+                    <tr><th>Constraint</th><th>Meaning</th><th>Example in project</th></tr>
+                    <tr><td><code>PRIMARY KEY</code></td><td>Unique ID of every row. Cannot be empty or repeated.</td><td>customer_id, room_id, booking_id ...</td></tr>
+                    <tr><td><code>FOREIGN KEY</code></td><td>Value must already exist in another table. Connects two tables.</td><td>bookings.customer_id &rarr; customers.customer_id</td></tr>
+                    <tr><td><code>NOT NULL</code></td><td>The value cannot be left empty.</td><td>first_name, check_in</td></tr>
+                    <tr><td><code>UNIQUE</code></td><td>No two rows can have the same value.</td><td>phone, email, room_number</td></tr>
+                    <tr><td><code>CHECK</code></td><td>Value must follow a condition.</td><td>price_per_night &gt; 0, check_out &gt; check_in</td></tr>
+                    <tr><td><code>DEFAULT</code></td><td>Value used when nothing is given.</td><td>status = 'Available'</td></tr>
+                </table>
+
+                <h3>Table 1: customers</h3>
+<pre><code class="sql">CREATE TABLE customers (
+    customer_id   INT PRIMARY KEY,
+    first_name    VARCHAR(50)  NOT NULL,
+    last_name     VARCHAR(50),
+    phone         VARCHAR(15)  NOT NULL UNIQUE,
+    email         VARCHAR(100) UNIQUE,
+    city          VARCHAR(50)
+);</code></pre>
+                <ul>
+                    <li><b>customer_id</b> is the Primary Key: every customer gets a different number.</li>
+                    <li>Phone is stored as <code>VARCHAR</code>, not INT, because we never do maths on phone numbers and they can start with 0 or +91.</li>
+                    <li><b>phone</b> is <code>NOT NULL UNIQUE</code>: every customer must give a phone number, and it cannot belong to two customers.</li>
+                </ul>
+
+                <h3>Table 2: rooms</h3>
+<pre><code class="sql">CREATE TABLE rooms (
+    room_id          INT PRIMARY KEY,
+    room_number      VARCHAR(10)  NOT NULL UNIQUE,
+    room_type        VARCHAR(20)  NOT NULL,
+    price_per_night  DECIMAL(8,2) NOT NULL CHECK (price_per_night &gt; 0),
+    status           VARCHAR(20)  DEFAULT 'Available'
+);</code></pre>
+                <ul>
+                    <li><b>room_id</b> (1, 2, 3 ...) is the ID used inside the database. <b>room_number</b> ('101', '102' ...) is the number written on the door.</li>
+                    <li><code>CHECK (price_per_night &gt; 0)</code> stops a price of 0 or a negative price.</li>
+                    <li><code>DEFAULT 'Available'</code>: a new room is Available if we do not give a status.</li>
+                </ul>
+
+                <h3>Table 3: staff</h3>
+<pre><code class="sql">CREATE TABLE staff (
+    staff_id    INT PRIMARY KEY,
+    staff_name  VARCHAR(50) NOT NULL,
+    role        VARCHAR(30) NOT NULL,
+    phone       VARCHAR(15),
+    salary      DECIMAL(10,2)
+);</code></pre>
+                <ul>
+                    <li>A simple table of employees. A staff member's <b>staff_id</b> is saved in every booking they make.</li>
+                </ul>
+
+                <h3>Table 4: bookings (the most important table)</h3>
+<pre><code class="sql">CREATE TABLE bookings (
+    booking_id      INT PRIMARY KEY,
+    customer_id     INT  NOT NULL,
+    room_id         INT  NOT NULL,
+    staff_id        INT,
+    check_in        DATE NOT NULL,
+    check_out       DATE NOT NULL,
+    booking_status  VARCHAR(20) DEFAULT 'Confirmed',
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    FOREIGN KEY (room_id)     REFERENCES rooms(room_id),
+    FOREIGN KEY (staff_id)    REFERENCES staff(staff_id),
+    CHECK (check_out &gt; check_in)
+);</code></pre>
+                <ul>
+                    <li>It has <b>3 Foreign Keys</b>. They connect a booking to a customer, a room and a staff member.</li>
+                    <li><code>FOREIGN KEY (customer_id) REFERENCES customers(customer_id)</code> means: the customer_id written here <b>must exist</b> in the customers table.</li>
+                    <li><code>CHECK (check_out &gt; check_in)</code> stops wrong dates, like leaving before arriving.</li>
+                </ul>
+
+                <h3>Table 5: payments</h3>
+<pre><code class="sql">CREATE TABLE payments (
+    payment_id      INT PRIMARY KEY,
+    booking_id      INT NOT NULL UNIQUE,
+    amount          DECIMAL(10,2) NOT NULL,
+    payment_date    DATE NOT NULL,
+    payment_method  VARCHAR(20),
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id)
+);</code></pre>
+                <ul>
+                    <li><b>booking_id</b> is a Foreign Key <b>and</b> UNIQUE. A Foreign Key alone would allow many payments per booking (1 : N).
+                        Adding UNIQUE allows only <b>one payment per booking</b>, which makes the relationship <b>1 : 1</b>.</li>
+                </ul>
+
+                <div class="note">
+                    <b>Why is the order of the tables important?</b> A Foreign Key can only point to a table that
+                    already exists. So <b>customers</b>, <b>rooms</b> and <b>staff</b> are created first, then
+                    <b>bookings</b> (which points to them), and <b>payments</b> last (it points to bookings).
+                </div>
+            </section>
+
+            <!-- ================= 6. FILE 2 ================= -->
+            <section id="sql-data">
+                <h2>6. SQL File 2 &ndash; Inserting the Data</h2>
+                <p>File: <code>sql/02_insert_data.sql</code>. It fills the tables with sample data.</p>
+<pre><code class="sql">INSERT INTO customers VALUES
+(1, 'Aman',  'Gupta', '9810000001', 'aman.gupta@gmail.com',  'Delhi'),
+(2, 'Sneha', 'Patel', '9810000002', 'sneha.patel@gmail.com', 'Ahmedabad');</code></pre>
+                <ul>
+                    <li><code>INSERT INTO table VALUES (...)</code> adds a new row. Many rows can be added in one statement, separated by commas.</li>
+                    <li>The values are written in the <b>same order as the columns</b> of the table.</li>
+                    <li>Text and dates are written inside single quotes: <code>'Aman'</code>, <code>'2026-09-01'</code>. Numbers are not.</li>
+                    <li>Order of inserting is important because of Foreign Keys: customers, rooms, staff &rarr; bookings &rarr; payments.</li>
+                </ul>
+
+                <h3>Sample data in short</h3>
+                <table>
+                    <tr><th>Table</th><th>Rows</th><th>Notes</th></tr>
+                    <tr><td>customers</td><td>10</td><td>Meera Iyer (customer 10) has no booking yet.</td></tr>
+                    <tr><td>rooms</td><td>10</td><td>3 Single, 3 Double, 2 Deluxe, 2 Suite. Room 203 is under Maintenance.</td></tr>
+                    <tr><td>staff</td><td>5</td><td>Manager, 2 Receptionists, Housekeeping, Accountant.</td></tr>
+                    <tr><td>bookings</td><td>10</td><td>5 Completed, 1 Cancelled (booking 5), 4 Confirmed.</td></tr>
+                    <tr><td>payments</td><td>7</td><td>Booking 5 was cancelled (no payment). Bookings 8 and 10 will pay at check-out.</td></tr>
+                </table>
+
+                <h3>The constraints really work (tested in MySQL 8)</h3>
+                <p>If we try to insert wrong data, MySQL stops us with an error. These are the real error messages:</p>
+<pre><code class="sql">-- customer 99 does not exist  -&gt;  FOREIGN KEY error
+INSERT INTO bookings VALUES (99, 99, 1, 1, '2026-12-01', '2026-12-02', 'Confirmed');</code></pre>
+<pre class="out">ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails</pre>
+<pre><code class="sql">-- check-out (2 Dec) is before check-in (5 Dec)  -&gt;  CHECK error
+INSERT INTO bookings VALUES (98, 1, 1, 1, '2026-12-05', '2026-12-02', 'Confirmed');</code></pre>
+<pre class="out">ERROR 3819 (HY000): Check constraint 'bookings_chk_1' is violated.</pre>
+<pre><code class="sql">-- phone 9810000001 already belongs to Aman  -&gt;  UNIQUE error
+INSERT INTO customers VALUES (12, 'Test', 'User', '9810000001', 'test@gmail.com', 'Agra');</code></pre>
+<pre class="out">ERROR 1062 (23000): Duplicate entry '9810000001' for key 'customers.phone'</pre>
+<pre><code class="sql">-- booking 1 is already paid  -&gt;  UNIQUE error (only one payment per booking)
+INSERT INTO payments VALUES (9, 1, 100.00, '2026-12-01', 'Cash');</code></pre>
+<pre class="out">ERROR 1062 (23000): Duplicate entry '1' for key 'payments.booking_id'</pre>
+            </section>
+
+            <!-- ================= 7. FILE 3 ================= -->
+            <section id="sql-queries">
+                <h2>7. SQL File 3 &ndash; All 26 Queries Explained</h2>
+                <p>File: <code>sql/03_queries.sql</code>. Click a query to open it.
+                   <button type="button" class="btn" id="toggle-queries" style="margin-top:0;padding:5px 12px;font-size:13px;">Open all queries</button></p>
+
+                <!-- PART A -->
+                <p class="part-title">Part A &ndash; Basic SELECT</p>
+
+                <details class="q">
+                    <summary><span class="qno">Q1</span> Show all customers <span class="qtag">SELECT *</span></summary>
+<pre><code class="sql">SELECT * FROM customers;</code></pre>
+                    <p><code>*</code> means "all columns". There is no <code>WHERE</code>, so every row is shown.
+                       <b>Output:</b> all 10 customers.</p>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q2</span> Show all rooms that are available <span class="qtag">WHERE</span></summary>
+<pre><code class="sql">SELECT room_number, room_type, price_per_night
+FROM rooms
+WHERE status = 'Available';</code></pre>
+                    <p><code>WHERE</code> keeps only the rows where the condition is true. Here: rooms whose status is Available.</p>
+<pre class="out">+-------------+-----------+-----------------+
+| room_number | room_type | price_per_night |
++-------------+-----------+-----------------+
+| 101         | Single    |         1500.00 |
+| 103         | Double    |         2500.00 |
+| 201         | Deluxe    |         4000.00 |
+| 301         | Suite     |         7000.00 |
+| 303         | Single    |         1500.00 |
++-------------+-----------+-----------------+</pre>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q3</span> Show all rooms from costliest to cheapest <span class="qtag">ORDER BY</span></summary>
+<pre><code class="sql">SELECT room_number, room_type, price_per_night
+FROM rooms
+ORDER BY price_per_night DESC;</code></pre>
+                    <p><code>ORDER BY</code> sorts the result. <code>DESC</code> = biggest first, <code>ASC</code> = smallest first (ASC is the default).
+                       <b>Output:</b> the two Suites (7000) first, then Deluxe (4000), Double (2500) and Single (1500).</p>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q4</span> Rooms with price between 2000 and 5000 <span class="qtag">BETWEEN</span></summary>
+<pre><code class="sql">SELECT room_number, room_type, price_per_night
+FROM rooms
+WHERE price_per_night BETWEEN 2000 AND 5000;</code></pre>
+                    <p><code>BETWEEN a AND b</code> includes both a and b. It is the same as <code>price_per_night &gt;= 2000 AND price_per_night &lt;= 5000</code>.</p>
+<pre class="out">+-------------+-----------+-----------------+
+| room_number | room_type | price_per_night |
++-------------+-----------+-----------------+
+| 103         | Double    |         2500.00 |
+| 104         | Double    |         2500.00 |
+| 201         | Deluxe    |         4000.00 |
+| 202         | Deluxe    |         4000.00 |
+| 203         | Double    |         2500.00 |
++-------------+-----------+-----------------+</pre>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q5</span> Customers whose first name starts with 'A' <span class="qtag">LIKE</span></summary>
+<pre><code class="sql">SELECT first_name, last_name, city
+FROM customers
+WHERE first_name LIKE 'A%';</code></pre>
+                    <p><code>LIKE</code> searches for a pattern. <code>%</code> means "any number of any characters", so <code>'A%'</code> = starts with A.</p>
+<pre class="out">+------------+-----------+-----------+
+| first_name | last_name | city      |
++------------+-----------+-----------+
+| Aman       | Gupta     | Delhi     |
+| Arjun      | Reddy     | Hyderabad |
+| Anjali     | Das       | Kolkata   |
++------------+-----------+-----------+</pre>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q6</span> Customers from Delhi, Mumbai or Pune <span class="qtag">IN</span></summary>
+<pre><code class="sql">SELECT first_name, last_name, city
+FROM customers
+WHERE city IN ('Delhi', 'Mumbai', 'Pune');</code></pre>
+                    <p><code>IN (...)</code> checks if the value is in the list. It is a short way of writing many <code>OR</code> conditions.</p>
+<pre class="out">+------------+-----------+--------+
+| first_name | last_name | city   |
++------------+-----------+--------+
+| Aman       | Gupta     | Delhi  |
+| Rohit      | Mehta     | Mumbai |
+| Pooja      | Joshi     | Pune   |
++------------+-----------+--------+</pre>
+                </details>
+
+                <!-- PART B -->
+                <p class="part-title">Part B &ndash; Aggregate Functions, GROUP BY, HAVING</p>
+
+                <details class="q">
+                    <summary><span class="qno">Q7</span> Total number of rooms <span class="qtag">COUNT</span></summary>
+<pre><code class="sql">SELECT COUNT(*) AS total_rooms
+FROM rooms;</code></pre>
+                    <p><code>COUNT(*)</code> counts the rows. <code>AS</code> gives the result column a nice name. <b>Output:</b> <code>total_rooms = 10</code>.</p>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q8</span> Number of rooms of each type <span class="qtag">GROUP BY</span></summary>
+<pre><code class="sql">SELECT room_type, COUNT(*) AS number_of_rooms
+FROM rooms
+GROUP BY room_type;</code></pre>
+                    <p><code>GROUP BY</code> puts rows with the same room_type in one group, then <code>COUNT(*)</code> counts each group.</p>
+<pre class="out">+-----------+-----------------+
+| room_type | number_of_rooms |
++-----------+-----------------+
+| Single    |               3 |
+| Double    |               3 |
+| Deluxe    |               2 |
+| Suite     |               2 |
++-----------+-----------------+</pre>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q9</span> Total money collected <span class="qtag">SUM</span></summary>
+<pre><code class="sql">SELECT SUM(amount) AS total_revenue
+FROM payments;</code></pre>
+                    <p><code>SUM</code> adds all the values of a column. <b>Output:</b> <code>total_revenue = 79000.00</code>.</p>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q10</span> Money collected by each payment method <span class="qtag">SUM + GROUP BY</span></summary>
+<pre><code class="sql">SELECT payment_method, SUM(amount) AS total_amount
+FROM payments
+GROUP BY payment_method;</code></pre>
+                    <p>One group for Card, one for UPI and one for Cash, and <code>SUM</code> for each group.</p>
+<pre class="out">+----------------+--------------+
+| payment_method | total_amount |
++----------------+--------------+
+| Card           |     41500.00 |
+| UPI            |     30000.00 |
+| Cash           |      7500.00 |
++----------------+--------------+</pre>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q11</span> Minimum, maximum and average room price <span class="qtag">MIN MAX AVG</span></summary>
+<pre><code class="sql">SELECT MIN(price_per_night) AS min_price,
+       MAX(price_per_night) AS max_price,
+       AVG(price_per_night) AS avg_price
+FROM rooms;</code></pre>
+                    <p>Three aggregate functions in one query. Average = (3&times;1500 + 3&times;2500 + 2&times;4000 + 2&times;7000) / 10 = 3400.</p>
+<pre class="out">+-----------+-----------+-------------+
+| min_price | max_price | avg_price   |
++-----------+-----------+-------------+
+|   1500.00 |   7000.00 | 3400.000000 |
++-----------+-----------+-------------+</pre>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q12</span> Room types that have more than 2 rooms <span class="qtag">HAVING</span></summary>
+<pre><code class="sql">SELECT room_type, COUNT(*) AS number_of_rooms
+FROM rooms
+GROUP BY room_type
+HAVING COUNT(*) &gt; 2;</code></pre>
+                    <p><code>HAVING</code> filters <b>groups</b> after GROUP BY. <code>WHERE</code> filters <b>rows</b> before grouping,
+                       so we cannot use WHERE with COUNT(*).</p>
+<pre class="out">+-----------+-----------------+
+| room_type | number_of_rooms |
++-----------+-----------------+
+| Single    |               3 |
+| Double    |               3 |
++-----------+-----------------+</pre>
+                </details>
+
+                <!-- PART C -->
+                <p class="part-title">Part C &ndash; JOINS</p>
+
+                <details class="q">
+                    <summary><span class="qno">Q13</span> Every booking with customer name and room number <span class="qtag">INNER JOIN</span></summary>
+<pre><code class="sql">SELECT b.booking_id,
+       c.first_name,
+       c.last_name,
+       r.room_number,
+       r.room_type,
+       b.check_in,
+       b.check_out,
+       b.booking_status
+FROM bookings b
+JOIN customers c ON b.customer_id = c.customer_id
+JOIN rooms r     ON b.room_id = r.room_id;</code></pre>
+                    <p><code>JOIN</code> (= INNER JOIN) joins two tables. <code>ON</code> says which columns must match.
+                       <code>b</code>, <code>c</code> and <code>r</code> are short names (aliases) for the tables.
+                       <b>Output:</b> 10 rows, for example:</p>
+<pre class="out">+------------+------------+-----------+-------------+-----------+------------+------------+----------------+
+| booking_id | first_name | last_name | room_number | room_type | check_in   | check_out  | booking_status |
++------------+------------+-----------+-------------+-----------+------------+------------+----------------+
+|          1 | Aman       | Gupta     | 103         | Double    | 2026-09-01 | 2026-09-04 | Completed      |
+|          2 | Sneha      | Patel     | 201         | Deluxe    | 2026-09-10 | 2026-09-12 | Completed      |
+|        ... | ...        | ...       | ...         | ...       | ...        | ...        | ...            |
++------------+------------+-----------+-------------+-----------+------------+------------+----------------+</pre>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q14</span> Calculate the bill of each booking <span class="qtag">JOIN + DATEDIFF</span></summary>
+<pre><code class="sql">SELECT b.booking_id,
+       c.first_name,
+       r.room_number,
+       DATEDIFF(b.check_out, b.check_in) AS nights,
+       r.price_per_night,
+       DATEDIFF(b.check_out, b.check_in) * r.price_per_night AS total_bill
+FROM bookings b
+JOIN customers c ON b.customer_id = c.customer_id
+JOIN rooms r     ON b.room_id = r.room_id;</code></pre>
+                    <p><code>DATEDIFF(date1, date2)</code> gives the number of days between two dates.
+                       Bill = nights &times; price_per_night. The price comes from <b>rooms</b>, the dates from <b>bookings</b>.</p>
+<pre class="out">+------------+------------+-------------+--------+-----------------+------------+
+| booking_id | first_name | room_number | nights | price_per_night | total_bill |
++------------+------------+-------------+--------+-----------------+------------+
+|          1 | Aman       | 103         |      3 |         2500.00 |    7500.00 |
+|          2 | Sneha      | 201         |      2 |         4000.00 |    8000.00 |
+|          3 | Rohit      | 101         |      5 |         1500.00 |    7500.00 |
+|          4 | Kavya      | 301         |      2 |         7000.00 |   14000.00 |
+|          5 | Arjun      | 103         |      1 |         2500.00 |    2500.00 |
+|          6 | Aman       | 201         |      4 |         4000.00 |   16000.00 |
+|          7 | Pooja      | 102         |      4 |         1500.00 |    6000.00 |
+|          8 | Karan      | 104         |      2 |         2500.00 |    5000.00 |
+|          9 | Anjali     | 202         |      5 |         4000.00 |   20000.00 |
+|         10 | Siddharth  | 302         |      3 |         7000.00 |   21000.00 |
++------------+------------+-------------+--------+-----------------+------------+</pre>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q15</span> Customers who have never booked <span class="qtag">LEFT JOIN</span></summary>
+<pre><code class="sql">SELECT c.customer_id, c.first_name, c.last_name
+FROM customers c
+LEFT JOIN bookings b ON c.customer_id = b.customer_id
+WHERE b.booking_id IS NULL;</code></pre>
+                    <p><code>LEFT JOIN</code> keeps <b>all</b> customers, even those with no booking. For them, the booking columns are
+                       <code>NULL</code>. Then <code>WHERE b.booking_id IS NULL</code> keeps only those customers.</p>
+<pre class="out">+-------------+------------+-----------+
+| customer_id | first_name | last_name |
++-------------+------------+-----------+
+|          10 | Meera      | Iyer      |
++-------------+------------+-----------+</pre>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q16</span> Number of bookings handled by each staff member <span class="qtag">LEFT JOIN + GROUP BY</span></summary>
+<pre><code class="sql">SELECT s.staff_name, s.role, COUNT(b.booking_id) AS bookings_handled
+FROM staff s
+LEFT JOIN bookings b ON s.staff_id = b.staff_id
+GROUP BY s.staff_id, s.staff_name, s.role;</code></pre>
+                    <p>LEFT JOIN keeps staff with 0 bookings too. <code>COUNT(b.booking_id)</code> does not count NULLs, so they get 0.</p>
+<pre class="out">+--------------+--------------+------------------+
+| staff_name   | role         | bookings_handled |
++--------------+--------------+------------------+
+| Rahul Verma  | Manager      |                1 |
+| Priya Sharma | Receptionist |                5 |
+| Amit Kumar   | Receptionist |                4 |
+| Neha Singh   | Housekeeping |                0 |
+| Vikram Rao   | Accountant   |                0 |
++--------------+--------------+------------------+</pre>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q17</span> Bookings that are not paid yet <span class="qtag">LEFT JOIN + IS NULL</span></summary>
+<pre><code class="sql">SELECT b.booking_id, c.first_name, b.check_in, b.check_out
+FROM bookings b
+JOIN customers c     ON b.customer_id = c.customer_id
+LEFT JOIN payments p ON b.booking_id = p.booking_id
+WHERE p.payment_id IS NULL
+  AND b.booking_status &lt;&gt; 'Cancelled';</code></pre>
+                    <p>Bookings with no matching payment have <code>p.payment_id = NULL</code>. <code>&lt;&gt;</code> means "not equal",
+                       so cancelled bookings are not shown.</p>
+<pre class="out">+------------+------------+------------+------------+
+| booking_id | first_name | check_in   | check_out  |
++------------+------------+------------+------------+
+|          8 | Karan      | 2026-11-02 | 2026-11-04 |
+|         10 | Siddharth  | 2026-11-03 | 2026-11-06 |
++------------+------------+------------+------------+</pre>
+                </details>
+
+                <!-- PART D -->
+                <p class="part-title">Part D &ndash; Subqueries</p>
+
+                <details class="q">
+                    <summary><span class="qno">Q18</span> Rooms that cost more than the average <span class="qtag">SUBQUERY</span></summary>
+<pre><code class="sql">SELECT room_number, room_type, price_per_night
+FROM rooms
+WHERE price_per_night &gt; (SELECT AVG(price_per_night) FROM rooms);</code></pre>
+                    <p>A <b>subquery</b> is a query inside another query. The inner query runs first and gives 3400,
+                       then the outer query finds rooms with price &gt; 3400.</p>
+<pre class="out">+-------------+-----------+-----------------+
+| room_number | room_type | price_per_night |
++-------------+-----------+-----------------+
+| 201         | Deluxe    |         4000.00 |
+| 202         | Deluxe    |         4000.00 |
+| 301         | Suite     |         7000.00 |
+| 302         | Suite     |         7000.00 |
++-------------+-----------+-----------------+</pre>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q19</span> Customers who have booked a Suite <span class="qtag">NESTED SUBQUERY</span></summary>
+<pre><code class="sql">SELECT first_name, last_name
+FROM customers
+WHERE customer_id IN (
+    SELECT customer_id
+    FROM bookings
+    WHERE room_id IN (SELECT room_id FROM rooms WHERE room_type = 'Suite')
+);</code></pre>
+                    <p>Read it from the inside out: (1) find the room_ids of Suites (8, 9), (2) find the customers who booked
+                       those rooms (4, 9), (3) show their names.</p>
+<pre class="out">+------------+-----------+
+| first_name | last_name |
++------------+-----------+
+| Kavya      | Nair      |
+| Siddharth  | Jain      |
++------------+-----------+</pre>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q20</span> The highest payment <span class="qtag">SUBQUERY + MAX</span></summary>
+<pre><code class="sql">SELECT payment_id, booking_id, amount, payment_method
+FROM payments
+WHERE amount = (SELECT MAX(amount) FROM payments);</code></pre>
+                    <p>The subquery finds the biggest amount (20000), and the outer query shows that payment.</p>
+<pre class="out">+------------+------------+----------+----------------+
+| payment_id | booking_id | amount   | payment_method |
++------------+------------+----------+----------------+
+|          7 |          9 | 20000.00 | Card           |
++------------+------------+----------+----------------+</pre>
+                </details>
+
+                <!-- PART E -->
+                <p class="part-title">Part E &ndash; View</p>
+
+                <details class="q">
+                    <summary><span class="qno">Q21</span> Create a view of booking details <span class="qtag">CREATE VIEW</span></summary>
+<pre><code class="sql">CREATE OR REPLACE VIEW booking_details AS
+SELECT b.booking_id,
+       CONCAT(c.first_name, ' ', c.last_name) AS customer_name,
+       r.room_number,
+       r.room_type,
+       b.check_in,
+       b.check_out,
+       DATEDIFF(b.check_out, b.check_in) AS nights,
+       DATEDIFF(b.check_out, b.check_in) * r.price_per_night AS total_bill,
+       b.booking_status
+FROM bookings b
+JOIN customers c ON b.customer_id = c.customer_id
+JOIN rooms r     ON b.room_id = r.room_id;</code></pre>
+                    <p>A <b>view</b> is a saved query that behaves like a table (a "virtual table"). It does not store data again.
+                       <code>CONCAT</code> joins first and last name into one text.</p>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q22</span> Use the view <span class="qtag">SELECT FROM VIEW</span></summary>
+<pre><code class="sql">SELECT * FROM booking_details;</code></pre>
+                    <p>Now this one short line gives the full booking details. This is the same data shown on the
+                       <a href="bookings.html">All Bookings</a> page.</p>
+                </details>
+
+                <!-- PART F -->
+                <p class="part-title">Part F &ndash; INSERT, UPDATE, DELETE</p>
+
+                <details class="q">
+                    <summary><span class="qno">Q23</span> New booking: Meera books room 303 <span class="qtag">INSERT + UPDATE</span></summary>
+<pre><code class="sql">INSERT INTO bookings VALUES
+(11, 10, 10, 2, '2026-11-10', '2026-11-12', 'Confirmed');
+
+UPDATE rooms
+SET status = 'Booked'
+WHERE room_id = 10;</code></pre>
+                    <p>A new booking row is added, then the room is marked as Booked.</p>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q24</span> Booking 7 checks out <span class="qtag">UPDATE</span></summary>
+<pre><code class="sql">UPDATE bookings
+SET booking_status = 'Completed'
+WHERE booking_id = 7;
+
+UPDATE rooms
+SET status = 'Available'
+WHERE room_id = 2;</code></pre>
+                    <p><code>UPDATE ... SET ... WHERE</code> changes existing rows. <b>Always use WHERE</b>, otherwise every row is changed.</p>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q25</span> 10% salary hike for staff member 2 <span class="qtag">UPDATE with maths</span></summary>
+<pre><code class="sql">UPDATE staff
+SET salary = salary * 1.10
+WHERE staff_id = 2;</code></pre>
+                    <p>The new value is calculated from the old value: 25000 &times; 1.10 = <b>27500</b>.</p>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q26</span> Delete the cancelled booking <span class="qtag">DELETE</span></summary>
+<pre><code class="sql">DELETE FROM bookings
+WHERE booking_id = 5;</code></pre>
+                    <p>Booking 5 has no payment, so it can be deleted. If we try to delete booking 1, MySQL stops us,
+                       because payment 1 still points to it (Foreign Key):</p>
+<pre class="out">ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails</pre>
+                </details>
+
+                <div class="note">
+                    <b>Tip for MySQL Workbench:</b> all UPDATE and DELETE queries use the Primary Key in WHERE
+                    (<code>WHERE booking_id = 5</code>), so they also work when "Safe Updates" mode is on.
+                </div>
+            </section>
+
+            <!-- ================= 8. FILE 4 ================= -->
+            <section id="sql-story">
+                <h2>8. SQL File 4 &ndash; The Check-in Story</h2>
+                <p>File: <code>sql/04_checkin_story.sql</code>. This is the SQL that <a href="#story-mode">Story Mode</a> plays.
+                   Run it after file 1 and file 2 (it also works after file 3).</p>
+<pre><code class="sql">-- STEP 2 : Save the customer's details
+INSERT INTO customers VALUES
+(11, 'Riya', 'Kapoor', '9810000011', 'riya.kapoor@gmail.com', 'Lucknow');
+
+-- STEP 3 : Find an available Deluxe room
+SELECT room_id, room_number, room_type, price_per_night
+FROM rooms
+WHERE status = 'Available' AND room_type = 'Deluxe';
+
+-- STEP 4 : Create the booking (room_id 5 = room 201, staff_id 3 = Amit)
+INSERT INTO bookings VALUES
+(12, 11, 5, 3, '2026-11-15', '2026-11-17', 'Confirmed');
+
+-- STEP 5 : Mark the room as booked
+UPDATE rooms
+SET status = 'Booked'
+WHERE room_id = 5;
+
+-- STEP 6 : Check-in day - see the booking with customer name and room number
+SELECT b.booking_id, c.first_name, c.last_name,
+       r.room_number, b.check_in, b.check_out
+FROM bookings b
+JOIN customers c ON b.customer_id = c.customer_id
+JOIN rooms r     ON b.room_id = r.room_id
+WHERE b.booking_id = 12;
+
+-- STEP 7 : Check-out day - calculate the bill
+SELECT b.booking_id,
+       DATEDIFF(b.check_out, b.check_in) AS nights,
+       r.price_per_night,
+       DATEDIFF(b.check_out, b.check_in) * r.price_per_night AS total_bill
+FROM bookings b
+JOIN rooms r ON b.room_id = r.room_id
+WHERE b.booking_id = 12;
+
+-- STEP 8 : Take the payment
+INSERT INTO payments VALUES
+(8, 12, 8000.00, '2026-11-17', 'UPI');
+
+-- STEP 9 : Complete the booking and free the room
+UPDATE bookings
+SET booking_status = 'Completed'
+WHERE booking_id = 12;
+
+UPDATE rooms
+SET status = 'Available'
+WHERE room_id = 5;
+
+-- STEP 10 : The end - Riya's full stay from all 5 tables
+SELECT c.first_name, c.last_name, s.staff_name, r.room_number,
+       b.check_in, b.check_out, b.booking_status,
+       p.amount, p.payment_method
+FROM bookings b
+JOIN customers c ON b.customer_id = c.customer_id
+JOIN rooms r     ON b.room_id = r.room_id
+JOIN staff s     ON b.staff_id = s.staff_id
+JOIN payments p  ON b.booking_id = p.booking_id
+WHERE b.booking_id = 12;</code></pre>
+                <p class="out-label">Final output (step 10):</p>
+<pre class="out">+------------+-----------+------------+-------------+------------+------------+----------------+---------+----------------+
+| first_name | last_name | staff_name | room_number | check_in   | check_out  | booking_status | amount  | payment_method |
++------------+-----------+------------+-------------+------------+------------+----------------+---------+----------------+
+| Riya       | Kapoor    | Amit Kumar | 201         | 2026-11-15 | 2026-11-17 | Completed      | 8000.00 | UPI            |
++------------+-----------+------------+-------------+------------+------------+----------------+---------+----------------+</pre>
+            </section>
+
+            <!-- ================= 9. CHEAT SHEET ================= -->
+            <section id="cheat-sheet">
+                <h2>9. SQL Cheat Sheet</h2>
+                <table>
+                    <tr><th>Keyword</th><th>What it does</th><th>Used in</th></tr>
+                    <tr><td><code>SELECT ... FROM</code></td><td>Shows columns from a table</td><td>Q1 &ndash; Q22</td></tr>
+                    <tr><td><code>WHERE</code></td><td>Keeps only the rows that match a condition</td><td>Q2, Q4, Q5, Q6</td></tr>
+                    <tr><td><code>ORDER BY ... ASC / DESC</code></td><td>Sorts the result</td><td>Q3</td></tr>
+                    <tr><td><code>BETWEEN</code>, <code>LIKE</code>, <code>IN</code></td><td>Range, pattern and list conditions</td><td>Q4, Q5, Q6</td></tr>
+                    <tr><td><code>COUNT SUM AVG MIN MAX</code></td><td>Aggregate functions: one answer from many rows</td><td>Q7 &ndash; Q12</td></tr>
+                    <tr><td><code>GROUP BY</code></td><td>Makes groups of rows with the same value</td><td>Q8, Q10, Q12, Q16</td></tr>
+                    <tr><td><code>HAVING</code></td><td>Filters groups (WHERE for groups)</td><td>Q12</td></tr>
+                    <tr><td><code>JOIN ... ON</code></td><td>Combines rows of two tables where the IDs match</td><td>Q13, Q14</td></tr>
+                    <tr><td><code>LEFT JOIN</code></td><td>Like JOIN, but keeps all rows of the left table</td><td>Q15, Q16, Q17</td></tr>
+                    <tr><td><code>IS NULL</code></td><td>Checks for an empty (missing) value</td><td>Q15, Q17</td></tr>
+                    <tr><td><code>DATEDIFF</code>, <code>CONCAT</code></td><td>Days between dates, joining text</td><td>Q14, Q21</td></tr>
+                    <tr><td>Subquery <code>( SELECT ... )</code></td><td>A query inside another query</td><td>Q18, Q19, Q20</td></tr>
+                    <tr><td><code>CREATE VIEW</code></td><td>Saves a query as a virtual table</td><td>Q21, Q22</td></tr>
+                    <tr><td><code>INSERT INTO ... VALUES</code></td><td>Adds new rows</td><td>File 2, Q23</td></tr>
+                    <tr><td><code>UPDATE ... SET ... WHERE</code></td><td>Changes existing rows</td><td>Q23, Q24, Q25</td></tr>
+                    <tr><td><code>DELETE FROM ... WHERE</code></td><td>Removes rows</td><td>Q26</td></tr>
+                </table>
+            </section>
+
+            <!-- ================= 10. VIVA ================= -->
+            <section id="viva">
+                <h2>10. Viva Questions</h2>
+                <p>Short answers to questions that are often asked about this kind of project.</p>
+
+                <details class="q">
+                    <summary>What is a Primary Key? Give an example.</summary>
+                    <p>A column that uniquely identifies every row. It cannot be NULL or repeated. Example: <code>customer_id</code> in customers.</p>
+                </details>
+                <details class="q">
+                    <summary>What is a Foreign Key? Why do we need it?</summary>
+                    <p>A column that points to the Primary Key of another table. It connects tables and stops wrong data,
+                       for example a booking for a customer that does not exist. Example: <code>bookings.customer_id</code>.</p>
+                </details>
+                <details class="q">
+                    <summary>How many entities and relationships are there in your ER diagram?</summary>
+                    <p>5 entities (customers, rooms, staff, bookings, payments) and 4 relationships: MAKES (1:N), RESERVED (1:N),
+                       HANDLES (1:N) and HAS (1:1).</p>
+                </details>
+                <details class="q">
+                    <summary>How did you make the bookings&ndash;payments relationship one-to-one?</summary>
+                    <p>By making <code>payments.booking_id</code> both a Foreign Key and <code>UNIQUE</code>. So one booking can have only one payment.</p>
+                </details>
+                <details class="q">
+                    <summary>Why is the total bill not stored in the bookings table?</summary>
+                    <p>Because it can be calculated: <code>DATEDIFF(check_out, check_in) * price_per_night</code>. Storing it would repeat data
+                       and it could become wrong if the price or dates change.</p>
+                </details>
+                <details class="q">
+                    <summary>What is the difference between WHERE and HAVING?</summary>
+                    <p><code>WHERE</code> filters rows before grouping. <code>HAVING</code> filters groups after <code>GROUP BY</code> and can use COUNT, SUM etc.</p>
+                </details>
+                <details class="q">
+                    <summary>What is the difference between INNER JOIN and LEFT JOIN?</summary>
+                    <p><code>INNER JOIN</code> shows only rows that match in both tables. <code>LEFT JOIN</code> shows all rows of the left table,
+                       with NULL where there is no match (used in Q15 to find customers with no booking).</p>
+                </details>
+                <details class="q">
+                    <summary>What is a view?</summary>
+                    <p>A saved SELECT query that works like a virtual table. It does not store data again. Example: <code>booking_details</code>.</p>
+                </details>
+                <details class="q">
+                    <summary>Which normal form are your tables in?</summary>
+                    <p>Third Normal Form (3NF): every column holds one value (1NF), every column depends on the whole Primary Key (2NF),
+                       and no column depends on another non-key column (3NF). For example, room price is only in rooms, not in bookings.</p>
+                </details>
+            </section>
+
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Grand Stay Hotel | DBMS CA Project</p>
+    </footer>
+
+    <script src="docs.js"></script>
+    <script src="er3d.js"></script>
+</body>
+</html>
