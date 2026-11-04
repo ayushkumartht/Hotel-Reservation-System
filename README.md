@@ -419,6 +419,12 @@ SOURCE sql/04_checkin_story.sql;
 ### Open the HTML pages
 Just double-click `html/index.html` to open it in any web browser.
 
+Or run the website on **localhost** (needs Python):
+```bash
+python -m http.server 8000 --directory html
+```
+Then open **http://localhost:8000** in the browser.
+
 ---
 
 ## ✅ Conclusion
