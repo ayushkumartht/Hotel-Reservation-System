@@ -114,6 +114,25 @@
                     <tr><td>booking.html</td><td>customers, bookings, payments</td><td><code>INSERT INTO customers ...</code>, <code>INSERT INTO bookings ...</code></td></tr>
                     <tr><td>bookings.html</td><td>bookings + customers + rooms</td><td><code>SELECT * FROM booking_details;</code> (a view)</td></tr>
                 </table>
+
+                <h3>Normalization: why there are 5 tables and not 1</h3>
+                <p>If everything was kept in one big table, the same customer and room details would be
+                   written again and again:</p>
+                <table>
+                    <tr><th>booking_id</th><th>customer_name</th><th>phone</th><th>room_number</th><th>price_per_night</th></tr>
+                    <tr><td>1</td><td>Aman Gupta</td><td>9810000001</td><td>103</td><td>2500</td></tr>
+                    <tr><td>6</td><td>Aman Gupta</td><td>9810000001</td><td>201</td><td>4000</td></tr>
+                    <tr><td>5</td><td>Arjun Reddy</td><td>9810000005</td><td>103</td><td>2500</td></tr>
+                </table>
+                <p>Aman's phone number is written twice, and the price of room 103 is written twice. If Aman's phone
+                   number changes, it must be changed in every row, and if one row is missed the data becomes wrong.
+                   Splitting the data into separate tables fixes this problem. This is called <b>normalization</b>:</p>
+                <table>
+                    <tr><th>Normal form</th><th>Rule</th><th>How our tables follow it</th></tr>
+                    <tr><td><b>1NF</b></td><td>Every cell has only one value. No lists or repeating groups.</td><td>Each customer has one phone number in one column. No cell holds a list like "101, 102".</td></tr>
+                    <tr><td><b>2NF</b></td><td>1NF, and every column depends on the <b>whole</b> primary key.</td><td>Every table has a one-column primary key (customer_id, room_id ...), so no column depends on only a part of the key.</td></tr>
+                    <tr><td><b>3NF</b></td><td>2NF, and no column depends on another non-key column.</td><td>Room price is kept only in <b>rooms</b> and names only in <b>customers</b>. <b>bookings</b> keeps only the IDs.</td></tr>
+                </table>
             </section>
 
             <!-- ================= 3. 3D ER DIAGRAM ================= -->
