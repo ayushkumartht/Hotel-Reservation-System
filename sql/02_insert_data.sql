@@ -88,3 +88,14 @@ SELECT * FROM rooms;
 SELECT * FROM staff;
 SELECT * FROM bookings;
 SELECT * FROM payments;
+
+-- Number of rows in every table (42 rows in total)
+SELECT 'customers' AS table_name, COUNT(*) AS total_rows FROM customers
+UNION ALL
+SELECT 'rooms', COUNT(*) FROM rooms
+UNION ALL
+SELECT 'staff', COUNT(*) FROM staff
+UNION ALL
+SELECT 'bookings', COUNT(*) FROM bookings
+UNION ALL
+SELECT 'payments', COUNT(*) FROM payments;
