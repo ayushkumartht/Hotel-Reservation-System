@@ -401,11 +401,16 @@ The 3D diagram is made with plain JavaScript and `<canvas>`. No library or inter
 5. (Optional) Open `sql/04_checkin_story.sql` to run the check-in story from the Docs page.
 
 **Option 2 – MySQL Command Line**
-```sql
+Open a terminal in the project folder and log in to MySQL:
+```bash
 mysql -u root -p
-SOURCE path/to/sql/01_create_tables.sql;
-SOURCE path/to/sql/02_insert_data.sql;
-SOURCE path/to/sql/03_queries.sql;
+```
+Then run the files one by one:
+```sql
+SOURCE sql/01_create_tables.sql;
+SOURCE sql/02_insert_data.sql;
+SOURCE sql/03_queries.sql;
+SOURCE sql/04_checkin_story.sql;
 ```
 
 > Run the files **in order** (01 → 02 → 03). Running `01_create_tables.sql` again will
