@@ -33,7 +33,7 @@ CREATE TABLE customers (
 CREATE TABLE rooms (
     room_id          INT PRIMARY KEY,
     room_number      VARCHAR(10)  NOT NULL UNIQUE,
-    room_type        VARCHAR(20)  NOT NULL,
+    room_type        VARCHAR(20)  NOT NULL CHECK (room_type IN ('Single', 'Double', 'Deluxe', 'Suite')),
     price_per_night  DECIMAL(8,2) NOT NULL CHECK (price_per_night > 0),
     status           VARCHAR(20)  DEFAULT 'Available'
 );
