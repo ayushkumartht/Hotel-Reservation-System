@@ -207,3 +207,14 @@ WHERE booking_id = 5;
 SELECT * FROM bookings;
 SELECT * FROM rooms;
 SELECT * FROM staff;
+
+
+-- =====================================================
+-- PART G : MORE USEFUL QUERIES
+-- (these run after Part F, so they use the changed data)
+-- =====================================================
+
+-- Q27. Rooms that have never been booked (NOT IN + subquery)
+SELECT room_number, room_type, status
+FROM rooms
+WHERE room_id NOT IN (SELECT room_id FROM bookings);
