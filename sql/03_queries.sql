@@ -218,3 +218,12 @@ SELECT * FROM staff;
 SELECT room_number, room_type, status
 FROM rooms
 WHERE room_id NOT IN (SELECT room_id FROM bookings);
+
+-- Q28. The customer who has spent the most money (GROUP BY + ORDER BY + LIMIT)
+SELECT c.first_name, c.last_name, SUM(p.amount) AS total_spent
+FROM customers c
+JOIN bookings b ON c.customer_id = b.customer_id
+JOIN payments p ON b.booking_id = p.booking_id
+GROUP BY c.customer_id, c.first_name, c.last_name
+ORDER BY total_spent DESC
+LIMIT 1;
