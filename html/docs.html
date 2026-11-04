@@ -37,6 +37,7 @@
             <a href="#sql-story">8. SQL File 4 &ndash; Story</a>
             <a href="#cheat-sheet">9. SQL Cheat Sheet</a>
             <a href="#viva">10. Viva Questions</a>
+            <a href="#how-to-run">11. How to Run</a>
         </aside>
 
         <main class="docs-content">
@@ -919,6 +920,22 @@ WHERE b.booking_id = 12;</code></pre>
                     <p>Third Normal Form (3NF): every column holds one value (1NF), every column depends on the whole Primary Key (2NF),
                        and no column depends on another non-key column (3NF). For example, room price is only in rooms, not in bookings.</p>
                 </details>
+            </section>
+
+            <!-- ================= 11. HOW TO RUN ================= -->
+            <section id="how-to-run">
+                <h2>11. How to Run the Project</h2>
+                <ol>
+                    <li>Open <b>MySQL Workbench</b> (or the MySQL command line).</li>
+                    <li>Run <code>sql/01_create_tables.sql</code> &ndash; creates the database and the tables.</li>
+                    <li>Run <code>sql/02_insert_data.sql</code> &ndash; adds the sample data.</li>
+                    <li>Run <code>sql/03_queries.sql</code> &ndash; run the queries one by one and look at the output.</li>
+                    <li>(Optional) Run <code>sql/04_checkin_story.sql</code> &ndash; the check-in story from Story Mode.</li>
+                    <li>Open <code>html/index.html</code> in a web browser to see the website.</li>
+                </ol>
+                <p>Or open the website on <b>localhost</b> (needs Python):</p>
+<pre><code>python -m http.server 8000 --directory html</code></pre>
+                <p>Then go to <b>http://localhost:8000</b> in the browser.</p>
             </section>
 
         </main>
