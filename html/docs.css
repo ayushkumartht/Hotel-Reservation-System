@@ -632,6 +632,47 @@ details.q > *:not(summary) {
     border-bottom: 2px solid #000;
 }
 
+/* ---------- Printing (the 3D viewer and the sidebar are not printed) ---------- */
+@media print {
+    .docs-sidebar,
+    .er-viewer,
+    .copy-btn,
+    .story-list,
+    #toggle-queries,
+    [data-start-story] {
+        display: none;
+    }
+
+    .docs-layout {
+        display: block;
+        padding: 0;
+    }
+
+    pre {
+        background-color: #ffffff;
+        color: #000000;
+        border: 1px solid #000000;
+        white-space: pre-wrap;
+        padding-right: 16px;
+    }
+
+    pre span {
+        color: #000000;
+    }
+
+    .flow-step span,
+    details.q[open] summary,
+    .tag {
+        background-color: #ffffff;
+        color: #000000;
+        border: 1px solid #000000;
+    }
+
+    .docs-content section {
+        page-break-inside: avoid;
+    }
+}
+
 /* ---------- Small screens ---------- */
 @media (max-width: 900px) {
     .docs-layout {
