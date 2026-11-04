@@ -1216,10 +1216,16 @@
     document.addEventListener('fullscreenchange', onFullChange);
     document.addEventListener('webkitfullscreenchange', onFullChange);
 
-    // keyboard: left / right arrows move through the story, Esc leaves it
+    // keyboard: F = full screen, left / right arrows move through the story, Esc leaves it
     document.addEventListener('keydown', function (ev) {
         if (ev.key === 'Escape' && viewer.classList.contains('er-full') && !fsElement()) {
             setFull(false);
+            return;
+        }
+        var typing = /^(INPUT|TEXTAREA|SELECT)$/.test((ev.target && ev.target.tagName) || '');
+        if ((ev.key === 'f' || ev.key === 'F') && visible && !typing && !ev.ctrlKey && !ev.metaKey && !ev.altKey) {
+            fullBtn.click();
+            ev.preventDefault();
             return;
         }
         if (mode !== 'story' || !visible) return;
