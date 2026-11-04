@@ -80,5 +80,30 @@
         <p>&copy; 2026 Grand Stay Hotel | DBMS CA Project</p>
     </footer>
 
+    <script>
+        // Check-in cannot be in the past and check-out must be after check-in.
+        // (the same rule as CHECK (check_out > check_in) in the bookings table)
+        (function () {
+            var checkIn = document.getElementById('checkin');
+            var checkOut = document.getElementById('checkout');
+
+            function toText(d) {
+                var m = d.getMonth() + 1, day = d.getDate();
+                return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (day < 10 ? '0' : '') + day;
+            }
+
+            var today = new Date();
+            checkIn.min = toText(today);
+            checkOut.min = toText(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1));
+
+            checkIn.addEventListener('change', function () {
+                if (!checkIn.value) return;
+                var p = checkIn.value.split('-');
+                checkOut.min = toText(new Date(+p[0], +p[1] - 1, +p[2] + 1));
+                if (checkOut.value && checkOut.value <= checkIn.value) checkOut.value = '';
+            });
+        })();
+    </script>
+
 </body>
 </html>
