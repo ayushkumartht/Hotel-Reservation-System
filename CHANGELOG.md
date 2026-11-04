@@ -11,6 +11,11 @@ All important changes of the Hotel Reservation System project.
 - 3D diagram: **F** key for full screen, current story step saved in the page link.
 - Home page: "How Booking Works" section. Rooms and Bookings pages: summary lines.
 - Project files: `.gitignore`, `.gitattributes`, `LICENSE`, `sql/README.md`, `docs/` folder.
+- Black and white ER diagram (`er_diagram_bw.svg`) and an `er-diagram/README.md`.
+- Docs page: search box for the queries, Q27 - Q29 explained.
+- 3D diagram: `+` / `-` keys zoom and `0` resets the view.
+- Booking form: check-in cannot be in the past, check-out must be after check-in.
+- Favicon, print styles and a meta description for the website.
 
 ### Changed
 - Booking form limits input length to the size of the database columns.
