@@ -30,23 +30,23 @@
             <!-- maxlength = the VARCHAR size of the same column in the customers table -->
             <label for="fname">First Name</label>
             <input type="text" id="fname" name="first_name" placeholder="Enter first name"
-                   maxlength="50" required>
+                   maxlength="50" autocomplete="given-name" required>
 
             <label for="lname">Last Name</label>
             <input type="text" id="lname" name="last_name" placeholder="Enter last name"
-                   maxlength="50">
+                   maxlength="50" autocomplete="family-name">
 
             <label for="phone">Phone Number</label>
             <input type="tel" id="phone" name="phone" placeholder="10 digit mobile number"
-                   pattern="[0-9]{10}" maxlength="10" required>
+                   pattern="[0-9]{10}" maxlength="10" autocomplete="tel-national" required>
 
             <label for="email">Email</label>
             <input type="email" id="email" name="email" placeholder="example@gmail.com"
-                   maxlength="100">
+                   maxlength="100" autocomplete="email">
 
             <label for="city">City</label>
             <input type="text" id="city" name="city" placeholder="Enter city"
-                   maxlength="50">
+                   maxlength="50" autocomplete="address-level2">
 
             <label for="roomtype">Room Type</label>
             <select id="roomtype" name="room_type" required>
