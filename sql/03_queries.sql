@@ -227,3 +227,9 @@ JOIN payments p ON b.booking_id = p.booking_id
 GROUP BY c.customer_id, c.first_name, c.last_name
 ORDER BY total_spent DESC
 LIMIT 1;
+
+-- Q29. Money collected in each month (MONTHNAME + GROUP BY)
+SELECT MONTHNAME(payment_date) AS month, SUM(amount) AS money_collected
+FROM payments
+GROUP BY MONTH(payment_date), MONTHNAME(payment_date)
+ORDER BY MONTH(payment_date);
