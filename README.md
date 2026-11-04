@@ -65,6 +65,7 @@ Simple **HTML pages** are also made to show how the front end of the system woul
 | HTML5 | Web pages |
 | CSS | Styling the web pages |
 | JavaScript (Canvas) | 3D interactive ER diagram and Story Mode on the Docs page |
+| Git / GitHub | Version control |
 | VS Code | Code editor |
 
 ---
@@ -74,16 +75,26 @@ Simple **HTML pages** are also made to show how the front end of the system woul
 Hotel-Reservation-System/
 │
 ├── README.md                  -> Project documentation (this file)
+├── CHANGELOG.md               -> List of changes
+├── LICENSE                    -> MIT license
 │
 ├── sql/
 │   ├── 01_create_tables.sql   -> Creates database and all tables
 │   ├── 02_insert_data.sql     -> Inserts sample data
-│   ├── 03_queries.sql         -> All SQL queries (26 queries)
-│   └── 04_checkin_story.sql   -> Check-in story (same steps as Story Mode)
+│   ├── 03_queries.sql         -> All SQL queries (29 queries)
+│   ├── 04_checkin_story.sql   -> Check-in story (same steps as Story Mode)
+│   ├── 05_views.sql           -> 3 useful views
+│   ├── 06_practice_questions.sql -> 10 practice questions with answers
+│   └── 07_cleanup.sql         -> Deletes the database
 │
 ├── er-diagram/
 │   ├── er_diagram.svg         -> ER Diagram (vector image)
-│   └── er_diagram.png         -> ER Diagram (PNG image)
+│   ├── er_diagram.png         -> ER Diagram (PNG image)
+│   └── er_diagram_bw.svg      -> ER Diagram (black and white, for printing)
+│
+├── docs/
+│   ├── data_dictionary.md     -> Every table and column explained
+│   └── normalization.md       -> 1NF, 2NF and 3NF explained
 │
 ├── html/
 │   ├── index.html             -> Home page
@@ -258,6 +269,9 @@ All queries are in [`sql/03_queries.sql`](sql/03_queries.sql).
 | D | Subqueries | Q18 – Q20 |
 | E | VIEW | Q21 – Q22 |
 | F | INSERT, UPDATE, DELETE | Q23 – Q26 |
+| G | NOT IN, ORDER BY + LIMIT, MONTHNAME + GROUP BY | Q27 – Q29 |
+
+More SQL: `05_views.sql` (3 views) and `06_practice_questions.sql` (10 practice questions with answers).
 
 ### Some important queries
 
@@ -371,7 +385,7 @@ The **Docs** page (link in the menu, or the *Read the Docs* button on the landin
 - **Story Mode** – follows a new guest (Riya Kapoor) from arriving to check-out in 10 steps.
   In each step only the tables being used light up, and the page shows the SQL that runs and the
   rows that change. The same SQL is in `sql/04_checkin_story.sql`.
-- **All SQL files explained** – every table, constraint and all 26 queries with their outputs,
+- **All SQL files explained** – every table, constraint and all 29 queries with their outputs,
   an SQL cheat sheet and viva questions.
 
 The 3D diagram is made with plain JavaScript and `<canvas>`. No library or internet is needed.
