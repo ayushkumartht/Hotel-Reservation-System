@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1200" height="800" fill="#ffffff"/>
+  <text x="20" y="32" font-size="20" font-weight="bold" fill="#000000">ER Diagram - Hotel Reservation System</text>
+
+  <!-- ================= LINES (drawn first) ================= -->
+  <g stroke="#333" stroke-width="1.5">
+    <!-- relationships -->
+    <line x1="220" y1="400" x2="600" y2="400"/>
+    <line x1="600" y1="400" x2="980" y2="400"/>
+    <line x1="600" y1="120" x2="600" y2="400"/>
+    <line x1="600" y1="400" x2="600" y2="690"/>
+
+    <!-- customer attributes -->
+    <line x1="220" y1="400" x2="110" y2="300"/>
+    <line x1="220" y1="400" x2="240" y2="290"/>
+    <line x1="220" y1="400" x2="345" y2="310"/>
+    <line x1="220" y1="400" x2="75"  y2="400"/>
+    <line x1="220" y1="400" x2="110" y2="500"/>
+    <line x1="220" y1="400" x2="240" y2="510"/>
+
+    <!-- room attributes -->
+    <line x1="980" y1="400" x2="1090" y2="300"/>
+    <line x1="980" y1="400" x2="955"  y2="290"/>
+    <line x1="980" y1="400" x2="1125" y2="400"/>
+    <line x1="980" y1="400" x2="1090" y2="500"/>
+    <line x1="980" y1="400" x2="955"  y2="510"/>
+
+    <!-- staff attributes -->
+    <line x1="600" y1="120" x2="440" y2="70"/>
+    <line x1="600" y1="120" x2="440" y2="160"/>
+    <line x1="600" y1="120" x2="600" y2="45"/>
+    <line x1="600" y1="120" x2="760" y2="70"/>
+    <line x1="600" y1="120" x2="760" y2="160"/>
+
+    <!-- booking attributes -->
+    <line x1="600" y1="400" x2="480" y2="320"/>
+    <line x1="600" y1="400" x2="720" y2="320"/>
+    <line x1="600" y1="400" x2="480" y2="480"/>
+    <line x1="600" y1="400" x2="725" y2="480"/>
+
+    <!-- payment attributes -->
+    <line x1="600" y1="690" x2="430" y2="650"/>
+    <line x1="600" y1="690" x2="430" y2="740"/>
+    <line x1="600" y1="690" x2="770" y2="650"/>
+    <line x1="600" y1="690" x2="770" y2="740"/>
+  </g>
+
+  <!-- ================= ENTITIES (rectangles) ================= -->
+  <g fill="#ffffff" stroke="#000000" stroke-width="2">
+    <rect x="150" y="375" width="140" height="50"/>
+    <rect x="910" y="375" width="140" height="50"/>
+    <rect x="530" y="95"  width="140" height="50"/>
+    <rect x="530" y="375" width="140" height="50"/>
+    <rect x="530" y="665" width="140" height="50"/>
+  </g>
+  <g font-size="16" font-weight="bold" text-anchor="middle" fill="#000000">
+    <text x="220" y="406">CUSTOMER</text>
+    <text x="980" y="406">ROOM</text>
+    <text x="600" y="126">STAFF</text>
+    <text x="600" y="406">BOOKING</text>
+    <text x="600" y="696">PAYMENT</text>
+  </g>
+
+  <!-- ================= RELATIONSHIPS (diamonds) ================= -->
+  <g fill="#ffffff" stroke="#000000" stroke-width="2">
+    <polygon points="345,400 410,365 475,400 410,435"/>
+    <polygon points="725,400 790,365 855,400 790,435"/>
+    <polygon points="535,250 600,215 665,250 600,285"/>
+    <polygon points="535,550 600,515 665,550 600,585"/>
+  </g>
+  <g font-size="13" font-weight="bold" text-anchor="middle" fill="#000000">
+    <text x="410" y="405">MAKES</text>
+    <text x="790" y="405">RESERVED</text>
+    <text x="600" y="255">HANDLES</text>
+    <text x="600" y="555">HAS</text>
+  </g>
+
+  <!-- ================= CARDINALITY ================= -->
+  <g font-size="15" font-weight="bold" fill="#000000">
+    <text x="305" y="392">1</text>
+    <text x="508" y="392">N</text>
+    <text x="885" y="392">1</text>
+    <text x="682" y="392">N</text>
+    <text x="608" y="185">1</text>
+    <text x="608" y="360">N</text>
+    <text x="608" y="450">1</text>
+    <text x="608" y="650">1</text>
+  </g>
+
+  <!-- ================= ATTRIBUTES (ellipses) ================= -->
+  <g fill="#ffffff" stroke="#000000" stroke-width="1.5">
+    <!-- customer -->
+    <ellipse cx="110" cy="300" rx="62" ry="20"/>
+    <ellipse cx="240" cy="290" rx="62" ry="20"/>
+    <ellipse cx="345" cy="310" rx="50" ry="20"/>
+    <ellipse cx="75"  cy="400" rx="62" ry="20"/>
+    <ellipse cx="110" cy="500" rx="50" ry="20"/>
+    <ellipse cx="240" cy="510" rx="50" ry="20"/>
+    <!-- room -->
+    <ellipse cx="1090" cy="300" rx="55" ry="20"/>
+    <ellipse cx="955"  cy="290" rx="68" ry="20"/>
+    <ellipse cx="1125" cy="400" rx="62" ry="20"/>
+    <ellipse cx="1090" cy="500" rx="75" ry="20"/>
+    <ellipse cx="955"  cy="510" rx="50" ry="20"/>
+    <!-- staff -->
+    <ellipse cx="440" cy="70"  rx="55" ry="20"/>
+    <ellipse cx="440" cy="160" rx="65" ry="20"/>
+    <ellipse cx="600" cy="45"  rx="50" ry="20"/>
+    <ellipse cx="760" cy="70"  rx="45" ry="20"/>
+    <ellipse cx="760" cy="160" rx="50" ry="20"/>
+    <!-- booking -->
+    <ellipse cx="480" cy="320" rx="62" ry="20"/>
+    <ellipse cx="720" cy="320" rx="55" ry="20"/>
+    <ellipse cx="480" cy="480" rx="62" ry="20"/>
+    <ellipse cx="725" cy="480" rx="78" ry="20"/>
+    <!-- payment -->
+    <ellipse cx="430" cy="650" rx="62" ry="20"/>
+    <ellipse cx="430" cy="740" rx="50" ry="20"/>
+    <ellipse cx="770" cy="650" rx="70" ry="20"/>
+    <ellipse cx="770" cy="740" rx="80" ry="20"/>
+  </g>
+  <g font-size="13" text-anchor="middle" fill="#000000">
+    <!-- customer -->
+    <text x="110" y="305" text-decoration="underline" font-weight="bold">customer_id</text>
+    <text x="240" y="295">first_name</text>
+    <text x="345" y="315">city</text>
+    <text x="75"  y="405">last_name</text>
+    <text x="110" y="505">phone</text>
+    <text x="240" y="515">email</text>
+    <!-- room -->
+    <text x="1090" y="305" text-decoration="underline" font-weight="bold">room_id</text>
+    <text x="955"  y="295">room_number</text>
+    <text x="1125" y="405">room_type</text>
+    <text x="1090" y="505">price_per_night</text>
+    <text x="955"  y="515">status</text>
+    <!-- staff -->
+    <text x="440" y="75"  text-decoration="underline" font-weight="bold">staff_id</text>
+    <text x="440" y="165">staff_name</text>
+    <text x="600" y="50">salary</text>
+    <text x="760" y="75">role</text>
+    <text x="760" y="165">phone</text>
+    <!-- booking -->
+    <text x="480" y="325" text-decoration="underline" font-weight="bold">booking_id</text>
+    <text x="720" y="325">check_in</text>
+    <text x="480" y="485">check_out</text>
+    <text x="725" y="485">booking_status</text>
+    <!-- payment -->
+    <text x="430" y="655" text-decoration="underline" font-weight="bold">payment_id</text>
+    <text x="430" y="745">amount</text>
+    <text x="770" y="655">payment_date</text>
+    <text x="770" y="745">payment_method</text>
+  </g>
+
+  <!-- ================= LEGEND ================= -->
+  <g font-size="13" fill="#333">
+    <rect x="20" y="620" width="220" height="165" fill="#fafafa" stroke="#999"/>
+    <text x="30" y="642" font-weight="bold">Legend</text>
+    <rect x="30" y="655" width="40" height="20" fill="#ffffff" stroke="#000000" stroke-width="2"/>
+    <text x="80" y="670">Entity (Table)</text>
+    <polygon points="30,697 50,686 70,697 50,708" fill="#ffffff" stroke="#000000" stroke-width="2"/>
+    <text x="80" y="702">Relationship</text>
+    <ellipse cx="50" cy="727" rx="20" ry="11" fill="#ffffff" stroke="#000000" stroke-width="1.5"/>
+    <text x="80" y="732">Attribute</text>
+    <text x="30" y="760" text-decoration="underline" font-weight="bold" fill="#000000">underlined</text>
+    <text x="110" y="760">= Primary Key</text>
+    <text x="30" y="778">1 / N = Cardinality</text>
+  </g>
+</svg>
