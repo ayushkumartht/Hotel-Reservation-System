@@ -97,6 +97,23 @@
         });
     }
 
+    // search box: shows only the queries that contain the typed word
+    var search = document.getElementById('query-search');
+    if (search) {
+        var boxes = document.querySelectorAll('#sql-queries details.q');
+        var count = document.getElementById('query-count');
+        search.addEventListener('input', function () {
+            var word = search.value.trim().toLowerCase();
+            var shown = 0;
+            Array.prototype.forEach.call(boxes, function (d) {
+                var match = !word || d.textContent.toLowerCase().indexOf(word) !== -1;
+                d.style.display = match ? '' : 'none';
+                if (match) shown++;
+            });
+            count.textContent = word ? shown + ' of ' + boxes.length + ' queries' : '';
+        });
+    }
+
     // every query box gets an id (q1, q2 ...), so a link like docs.html#q14 opens that query
     Array.prototype.forEach.call(document.querySelectorAll('details.q'), function (d) {
         var no = d.querySelector('.qno');
