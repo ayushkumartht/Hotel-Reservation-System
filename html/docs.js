@@ -13,8 +13,8 @@
         'INNER', 'ON', 'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE', 'CREATE', 'TABLE',
         'DATABASE', 'DROP', 'IF', 'EXISTS', 'USE', 'PRIMARY', 'KEY', 'FOREIGN', 'REFERENCES',
         'UNIQUE', 'CHECK', 'DEFAULT', 'VIEW', 'REPLACE', 'SHOW', 'TABLES', 'DISTINCT',
-        'INT', 'VARCHAR', 'DECIMAL', 'DATE'];
-    var FUNCTIONS = ['COUNT', 'SUM', 'AVG', 'MIN', 'MAX', 'DATEDIFF', 'CONCAT'];
+        'LIMIT', 'UNION', 'ALL', 'INT', 'VARCHAR', 'DECIMAL', 'DATE'];
+    var FUNCTIONS = ['COUNT', 'SUM', 'AVG', 'MIN', 'MAX', 'DATEDIFF', 'CONCAT', 'MONTHNAME', 'MONTH'];
 
     var TOKEN = new RegExp(
         '(--[^\\n]*)' +                                   // 1. comment
