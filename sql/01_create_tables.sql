@@ -69,7 +69,8 @@ CREATE TABLE bookings (
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
     FOREIGN KEY (room_id)     REFERENCES rooms(room_id),
     FOREIGN KEY (staff_id)    REFERENCES staff(staff_id),
-    CHECK (check_out > check_in)
+    CHECK (check_out > check_in),
+    CHECK (booking_status IN ('Confirmed', 'Cancelled', 'Completed'))
 );
 
 
