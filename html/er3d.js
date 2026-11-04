@@ -1236,6 +1236,12 @@
             ev.preventDefault();
             return;
         }
+        // + / - zoom, 0 = reset the view
+        if (visible && !typing && !ev.ctrlKey && !ev.metaKey && !ev.altKey) {
+            if (ev.key === '+' || ev.key === '=') { $('er-zoom-in').click(); ev.preventDefault(); return; }
+            if (ev.key === '-' || ev.key === '_') { $('er-zoom-out').click(); ev.preventDefault(); return; }
+            if (ev.key === '0') { $('er-reset').click(); ev.preventDefault(); return; }
+        }
         if (mode !== 'story' || !visible) return;
         var tag = (ev.target && ev.target.tagName) || '';
         if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
