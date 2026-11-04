@@ -1067,6 +1067,12 @@
         if (window.DocsSQL) window.DocsSQL.enhance(panel);
     }
 
+    // keep the current step in the page link, so it can be shared (docs.html#story-4)
+    function setLink(hash) {
+        if (!window.history || !history.replaceState) return;
+        history.replaceState(null, '', location.pathname + location.search + hash);
+    }
+
     function goStep(i, auto) {
         step = clamp(i, 0, STORY.length - 1);
         stepTimer = 0;
@@ -1075,6 +1081,7 @@
         setCam({ yaw: c.yaw, pitch: c.pitch, zoom: c.zoom, center: c.center });
         renderStoryPanel();
         updateStoryControls();
+        setLink('#story-' + (step + 1));
         if (!auto) lastInteract = time;
     }
 
@@ -1097,6 +1104,7 @@
         $('er-mode-explore').classList.add('on');
         setCam(DEFAULT_CAM);
         renderExplorePanel();
+        setLink('');
     }
 
     function updateStoryControls() {
