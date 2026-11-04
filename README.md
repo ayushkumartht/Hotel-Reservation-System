@@ -1,5 +1,10 @@
 # 🏨 Hotel Reservation System (DBMS CA Project)
 
+![MySQL](https://img.shields.io/badge/MySQL-8.0-black?logo=mysql&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-black?logo=html5&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS-black?logo=css&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-black?logo=javascript&logoColor=white)
+
 A simple **Hotel Reservation System** made with **MySQL** and **basic HTML/CSS**.
 It stores information about customers, rooms, staff, bookings and payments, and uses SQL queries to manage and view the data.
 
