@@ -97,6 +97,23 @@
         });
     }
 
+    // every query box gets an id (q1, q2 ...), so a link like docs.html#q14 opens that query
+    Array.prototype.forEach.call(document.querySelectorAll('details.q'), function (d) {
+        var no = d.querySelector('.qno');
+        if (no) d.id = no.textContent.trim().toLowerCase();
+    });
+    function openQueryFromLink() {
+        var id = location.hash.slice(1).toLowerCase();
+        if (!/^q\d+$/.test(id)) return;
+        var box = document.getElementById(id);
+        if (box) {
+            box.open = true;
+            box.scrollIntoView({ block: 'start' });
+        }
+    }
+    openQueryFromLink();
+    window.addEventListener('hashchange', openQueryFromLink);
+
     // highlight the section you are reading in the sidebar
     var links = document.querySelectorAll('.docs-sidebar a[href^="#"]');
     if (window.IntersectionObserver && links.length) {
