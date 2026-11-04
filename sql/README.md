@@ -8,6 +8,9 @@ Run the files **in this order** in MySQL Workbench or the MySQL command line.
 | 2 | `02_insert_data.sql` | Inserts the sample data (10 customers, 10 rooms, 5 staff, 10 bookings, 7 payments) |
 | 3 | `03_queries.sql` | All the queries: SELECT, GROUP BY, JOINs, subqueries, view, INSERT, UPDATE, DELETE |
 | 4 | `04_checkin_story.sql` | The check-in story of one guest (the same steps as Story Mode on the Docs page) |
+| 5 | `05_views.sql` | 3 useful views: `available_rooms`, `unpaid_bookings`, `staff_summary` |
+| 6 | `06_practice_questions.sql` | 10 practice questions with answers |
+| 7 | `07_cleanup.sql` | Deletes the whole `hotel_db` database (only run it to remove the project) |
 
 - Running `01_create_tables.sql` again deletes the database and creates it fresh, so you can start again at any time.
 - `04_checkin_story.sql` works after file 2 or after file 3.
