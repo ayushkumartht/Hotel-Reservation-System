@@ -181,6 +181,23 @@ input, select, textarea {
     text-decoration: none;
 }
 
+/* ---------- Keyboard focus (for people who use the Tab key) ---------- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid #000000;
+    outline-offset: 2px;
+}
+
+/* on black areas the outline is white */
+.hero a:focus-visible,
+footer a:focus-visible,
+.er-viewer button:focus-visible {
+    outline-color: #ffffff;
+}
+
 /* ---------- Footer ---------- */
 footer {
     background-color: #000000;
