@@ -233,6 +233,43 @@ footer {
     margin-top: 30px;
 }
 
+/* ---------- Printing (save as PDF / print on paper) ---------- */
+@media print {
+    nav,
+    .btn,
+    .btn-link {
+        display: none;
+    }
+
+    /* printers do not print background colours, so black boxes become outlines */
+    header,
+    .hero,
+    footer {
+        background-color: #ffffff;
+        color: #000000;
+        border-bottom: 2px solid #000000;
+        padding: 10px;
+    }
+
+    th {
+        background-color: #ffffff;
+        color: #000000;
+        border: 2px solid #000000;
+    }
+
+    .booked {
+        background-color: #ffffff;
+        color: #000000;
+        text-decoration: underline;
+    }
+
+    .container {
+        width: auto;
+        margin: 0;
+        border: none;
+    }
+}
+
 /* ---------- Phones and small screens ---------- */
 @media (max-width: 700px) {
     nav a {
