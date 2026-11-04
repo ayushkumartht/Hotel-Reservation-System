@@ -57,7 +57,7 @@
                     <div class="stat"><b>5</b>Tables</div>
                     <div class="stat"><b>4</b>Relationships</div>
                     <div class="stat"><b>42</b>Sample rows</div>
-                    <div class="stat"><b>4</b>SQL files</div>
+                    <div class="stat"><b>7</b>SQL files</div>
                 </div>
 
                 <table>
@@ -185,7 +185,7 @@
                     </div>
 
                     <div class="er-hint">
-                        <span class="er-hint-explore">Drag to rotate &middot; Click a table or diamond &middot; Ctrl + wheel or + / &minus; to zoom &middot; F = full screen</span>
+                        <span class="er-hint-explore">Drag to rotate &middot; Click a table or diamond &middot; Ctrl + wheel or + / &minus; keys to zoom &middot; 0 = reset &middot; F = full screen</span>
                         <span class="er-hint-story">Use Prev / Next (or the &larr; &rarr; keys) &middot; Play goes through the steps by itself &middot; Esc leaves the story &middot; F = full screen</span>
                     </div>
 
@@ -377,7 +377,7 @@ INSERT INTO payments VALUES (9, 1, 100.00, '2026-12-01', 'Cash');</code></pre>
 
             <!-- ================= 7. FILE 3 ================= -->
             <section id="sql-queries">
-                <h2>7. SQL File 3 &ndash; All 26 Queries Explained</h2>
+                <h2>7. SQL File 3 &ndash; All 29 Queries Explained</h2>
                 <p>File: <code>sql/03_queries.sql</code>. Click a query to open it.
                    <button type="button" class="btn" id="toggle-queries" style="margin-top:0;padding:5px 12px;font-size:13px;">Open all queries</button></p>
                 <p>
@@ -780,6 +780,59 @@ WHERE booking_id = 5;</code></pre>
 <pre class="out">ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails</pre>
                 </details>
 
+                <!-- PART G -->
+                <p class="part-title">Part G &ndash; More Useful Queries</p>
+
+                <details class="q">
+                    <summary><span class="qno">Q27</span> Rooms that have never been booked <span class="qtag">NOT IN</span></summary>
+<pre><code class="sql">SELECT room_number, room_type, status
+FROM rooms
+WHERE room_id NOT IN (SELECT room_id FROM bookings);</code></pre>
+                    <p><code>NOT IN</code> is the opposite of <code>IN</code>. The subquery gives all room_ids that are used in bookings,
+                       and the outer query shows the rooms that are <b>not</b> in that list.</p>
+<pre class="out">+-------------+-----------+-------------+
+| room_number | room_type | status      |
++-------------+-----------+-------------+
+| 203         | Double    | Maintenance |
++-------------+-----------+-------------+</pre>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q28</span> The customer who spent the most <span class="qtag">ORDER BY + LIMIT</span></summary>
+<pre><code class="sql">SELECT c.first_name, c.last_name, SUM(p.amount) AS total_spent
+FROM customers c
+JOIN bookings b ON c.customer_id = b.customer_id
+JOIN payments p ON b.booking_id = p.booking_id
+GROUP BY c.customer_id, c.first_name, c.last_name
+ORDER BY total_spent DESC
+LIMIT 1;</code></pre>
+                    <p>Three tables are joined, the payments of each customer are added with <code>SUM</code>, the customers are sorted
+                       from the highest total, and <code>LIMIT 1</code> keeps only the first row.
+                       Aman paid 7500 + 16000 = 23500.</p>
+<pre class="out">+------------+-----------+-------------+
+| first_name | last_name | total_spent |
++------------+-----------+-------------+
+| Aman       | Gupta     |    23500.00 |
++------------+-----------+-------------+</pre>
+                </details>
+
+                <details class="q">
+                    <summary><span class="qno">Q29</span> Money collected in each month <span class="qtag">MONTHNAME + GROUP BY</span></summary>
+<pre><code class="sql">SELECT MONTHNAME(payment_date) AS month, SUM(amount) AS money_collected
+FROM payments
+GROUP BY MONTH(payment_date), MONTHNAME(payment_date)
+ORDER BY MONTH(payment_date);</code></pre>
+                    <p><code>MONTHNAME()</code> turns a date into the name of its month. We group by the month number too, so the
+                       months are shown in calendar order and not in alphabetical order.</p>
+<pre class="out">+-----------+-----------------+
+| month     | money_collected |
++-----------+-----------------+
+| September |        23000.00 |
+| October   |        30000.00 |
+| November  |        26000.00 |
++-----------+-----------------+</pre>
+                </details>
+
                 <div class="note">
                     <b>Tip for MySQL Workbench:</b> all UPDATE and DELETE queries use the Primary Key in WHERE
                     (<code>WHERE booking_id = 5</code>), so they also work when "Safe Updates" mode is on.
@@ -855,6 +908,14 @@ WHERE b.booking_id = 12;</code></pre>
 +------------+-----------+------------+-------------+------------+------------+----------------+---------+----------------+
 | Riya       | Kapoor    | Amit Kumar | 201         | 2026-11-15 | 2026-11-17 | Completed      | 8000.00 | UPI            |
 +------------+-----------+------------+-------------+------------+------------+----------------+---------+----------------+</pre>
+
+                <h3>Three more SQL files</h3>
+                <table>
+                    <tr><th>File</th><th>What it has</th></tr>
+                    <tr><td><code>sql/05_views.sql</code></td><td>3 views: <code>available_rooms</code>, <code>unpaid_bookings</code> and <code>staff_summary</code></td></tr>
+                    <tr><td><code>sql/06_practice_questions.sql</code></td><td>10 practice questions with answers. Try to write each query yourself first.</td></tr>
+                    <tr><td><code>sql/07_cleanup.sql</code></td><td><code>DROP DATABASE hotel_db</code> &ndash; removes the whole project from MySQL</td></tr>
+                </table>
             </section>
 
             <!-- ================= 9. CHEAT SHEET ================= -->
@@ -878,6 +939,9 @@ WHERE b.booking_id = 12;</code></pre>
                     <tr><td><code>INSERT INTO ... VALUES</code></td><td>Adds new rows</td><td>File 2, Q23</td></tr>
                     <tr><td><code>UPDATE ... SET ... WHERE</code></td><td>Changes existing rows</td><td>Q23, Q24, Q25</td></tr>
                     <tr><td><code>DELETE FROM ... WHERE</code></td><td>Removes rows</td><td>Q26</td></tr>
+                    <tr><td><code>NOT IN</code></td><td>Keeps values that are not in a list or subquery</td><td>Q27</td></tr>
+                    <tr><td><code>LIMIT</code></td><td>Shows only the first rows of the result</td><td>Q28</td></tr>
+                    <tr><td><code>MONTHNAME</code>, <code>MONTH</code></td><td>Month name and month number of a date</td><td>Q29</td></tr>
                 </table>
             </section>
 
